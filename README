@@ -1,0 +1,4 @@
+This program uses 3 DOs on the raspberryPi to push out 32 bits of data to 4 shift registers, which drive 4 7-segment displays.
+
+make with:
+gcc -o <name> <source>
