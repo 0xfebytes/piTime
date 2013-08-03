@@ -9,8 +9,7 @@
 #define DS		0
 #define SHCP	2
 #define STCP	3
-#define CYCLE	700
-#define DELAY	10
+#define CYCLE	500
 
 /*
  * Arrays for digits
@@ -56,6 +55,10 @@ int main(int argc, char *argv[])
 	pinMode(STCP, OUTPUT);
 	pinMode(SHCP, OUTPUT);
 
+	// digitalWrite(DS, 1);
+	digitalWrite(STCP, 0);
+	digitalWrite(SHCP, 0);
+
 	for(;;) {
 		sys_time = time(NULL);
 		my_time = localtime(&sys_time);
@@ -72,26 +75,17 @@ int main(int argc, char *argv[])
 void shift_digit(uint8_t digit)
 {
 	int i = 7;
-	// make sure SHCP, STCP start low
-	digitalWrite(SHCP, 0);
-	digitalWrite(STCP, 0);
 
 	for(i = 7; i >= 0; i--){
 		digitalWrite(DS, my_index[digit][i]);
-		delay(DELAY);
-		digitalWrite(SHCP, 1);
-		delay(DELAY);
 		digitalWrite(SHCP, 0);
-		delay(DELAY);
+		digitalWrite(SHCP, 1);
 		// printf("%d ", my_index[digit][i]);
 	}
 }
 
 void load_digits(struct tm *cur_time)
 {
-	// make sure STCP is low
-	digitalWrite(STCP, 0);
-
 	// get time
 	uint8_t min_tens = cur_time->tm_min / 10;
 	uint8_t min_ones = cur_time->tm_min % 10;
@@ -111,8 +105,7 @@ void load_digits(struct tm *cur_time)
 	shift_digit(hour_tens);
 	// printf("\n");
 
-	// load into storage
+	// toggle storage clock input
 	digitalWrite(STCP, 1);
-	delay(DELAY);
 	digitalWrite(STCP, 0);
 }
